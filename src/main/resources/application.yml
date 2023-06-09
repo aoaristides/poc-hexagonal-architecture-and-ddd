@@ -1,0 +1,34 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/productsdb}
+    username: ${DATABASE_USERNAME:umbriel_admin}
+    password: ${DATABASE_PASSWORD:Tulipa1389@}
+    tomcat:
+      test-on-borrow: true # Valide a conex?o antes de pedir emprestado a partir do pool.
+      max-active: 50 # N?mero m?ximo de conex?es ativas que podem ser alocadas a partir deste pool ao mesmo tempo.
+    hikari:
+      auto-commit: false
+      connection-timeout: 250 # ? uma configura??o em milliseconds. O ideal ? manter baixo para que estoure timeout logo e n?o prenda as threads
+      max-lifetime: 600000 # Tempo m?ximo que uma conex?o pode ficar aberta (10 min) - security
+      maximum-pool-size: 20 # Mantemos at? 20 conex?es com banco de dados. O ideal ? manter baixo mesmo, pois ? algo custoso para o banco gerenciar.
+      minimum-idle: 10
+      pool-name: master
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    properties:
+      '[hibernate.connection.provider_disables_autocommit]': true # Para aumentar a performance ao m?ximo, desabilitamos o auto-commit e o open-in-view.
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+        generate_statistics: false
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+    date-format: yyyy-MM-dd
